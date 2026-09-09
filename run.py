@@ -1,34 +1,26 @@
-# app klasöründeki __init__.py dosyasında oluşturduğumuz
-# create_app() fonksiyonunu buraya aktarıyoruz.
-#
-# create_app() fonksiyonunun görevi:
-# Flask uygulamasını, ayarları, veritabanını,
-# CORS sistemini ve rotaları tek yerde birleştirmektir.
+# BLOCERA Flask uygulamasını Render ve yerel bilgisayarda başlatır.
+
+import os
+
+# app klasöründeki create_app() fonksiyonunu çağırıyoruz.
 from app import create_app
 
 
-# create_app() fonksiyonunu çalıştırarak
-# gerçek BLOCERA Flask uygulamasını oluşturuyoruz.
-#
-# Oluşan uygulamayı "app" isimli değişkende tutuyoruz.
+# Flask uygulamasını oluşturuyoruz.
 app = create_app()
 
 
-# Bu kontrol, run.py dosyası doğrudan çalıştırıldığında
-# aşağıdaki sunucunun başlatılmasını sağlar.
-#
-# Eğer bu dosya başka bir Python dosyasından import edilirse
-# app.run() otomatik olarak çalışmaz.
+# run.py doğrudan çalıştırıldığında bu bölüm devreye girer.
 if __name__ == "__main__":
 
-    # Flask geliştirme sunucusunu başlatıyoruz.
-    #
-    # debug=True:
-    # Kodda değişiklik yaptığımızda sunucunun otomatik yeniden başlamasını ve geliştirme hatalarını görmemizi sağlar.
-    # port=5000:
-    # BLOCERA backend'inin bilgisayarımızdaki
-    # 5000 numaralı port üzerinden çalışmasını sağlar.
+    # Render kendi PORT bilgisini verir.
+    # Bilgisayarında çalıştırırsan varsayılan olarak 5000 kullanır.
+    port = int(os.environ.get("PORT", 5000))
+
+    # 0.0.0.0 kullanmamızın sebebi:
+    # Render uygulamaya internetten erişebilmek için bunu ister.
     app.run(
-        debug=True,
-        port=5000
+        host="0.0.0.0",
+        port=port,
+        debug=False
     )
