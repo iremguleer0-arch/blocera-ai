@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BLOCERA AI</title>
+
+
+    <style>
+
+        /* ================================
+           SAYFANIN GENEL AYARLARI
+           ================================ */
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #0f172a;
+
+        }
+
+
+        /* ================================
+           SAĞ ALTTAKİ CHAT BUTONU
+           ================================ */
+
+        #chatButton {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            width: 65px;
+
+            height: 65px;
+
+            border-radius: 50%;
+
+            border: none;
+
+            background: #00c878;
+
+            color: white;
+
+            font-size: 28px;
+
+            cursor: pointer;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+
+            z-index: 9999;
+
+        }
+
+
+        /* Butonun üzerine gelince */
+
+        #chatButton:hover {
+
+            transform: scale(1.05);
+
+        }
+
+
+        /* ================================
+           CHAT PENCERESİ
+           ================================ */
+
+        #chatWindow {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 105px;
+
+            width: 380px;
+
+            height: 550px;
+
+            background: #111827;
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+            display: none;
+
+            flex-direction: column;
+
+            z-index: 9998;
+
+        }
+
+
+        /* ================================
+           CHAT ÜST BAŞLIK
+           ================================ */
+
+        .chatHeader {
+
+            background: #00c878;
+
+            color: white;
+
+            padding: 18px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+        /* Kapatma butonu */
+
+        #closeButton {
+
+            background: transparent;
+
+            border: none;
+
+            color: white;
+
+            font-size: 22px;
+
+            cursor: pointer;
+
+        }
+
+
+        /* ================================
+           MESAJLARIN BULUNDUĞU ALAN
+           ================================ */
+
+        #chatMessages {
+
+            flex: 1;
+
+            padding: 15px;
+
+            overflow-y: auto;
+
+        }
+
+
+        /* ================================
+           GENEL MESAJ TASARIMI
+           ================================ */
+
+        .message {
+
+            max-width: 80%;
+
+            padding: 12px 15px;
+
+            margin-bottom: 12px;
+
+            border-radius: 14px;
+
+            line-height: 1.5;
+
+            white-space: pre-wrap;
+
+        }
+
+
+        /* BLOCERA AI mesajı */
+
+        .aiMessage {
+
+            background: #1f2937;
+
+            color: white;
+
+            margin-right: auto;
+
+        }
+
+
+        /* Kullanıcı mesajı */
+
+        .userMessage {
+
+            background: #00c878;
+
+            color: white;
+
+            margin-left: auto;
+
+        }
+
+
+        /* ================================
+           ALT MESAJ GİRİŞ ALANI
+           ================================ */
+
+        .chatInput {
+
+            display: flex;
+
+            padding: 12px;
+
+            background: #020617;
+
+        }
+
+
+        #messageInput {
+
+            flex: 1;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 14px;
+
+        }
+
+
+        #sendButton {
+
+            margin-left: 8px;
+
+            padding: 12px 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #00c878;
+
+            color: white;
+
+            cursor: pointer;
+
+        }
+
+
+        /* ================================
+           TELEFON EKRANI
+           ================================ */
+
+        @media (max-width: 500px) {
+
+            #chatWindow {
+
+                right: 10px;
+
+                left: 10px;
+
+                bottom: 90px;
+
+                width: auto;
+
+                height: 70vh;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================
+         SAĞ ALT CHAT AÇMA BUTONU
+         ================================= -->
+
+    <button id="chatButton">
+
+        🤖
+
+    </button>
+
+
+
+    <!-- =================================
+         CHAT PENCERESİ
+         ================================= -->
+
+    <div id="chatWindow">
+
+
+        <!-- CHAT BAŞLIĞI -->
+
+        <div class="chatHeader">
+
+            <span>🤖 BLOCERA AI</span>
+
+            <button id="closeButton">×</button>
+
+        </div>
+
+
+
+        <!-- MESAJLAR -->
+
+        <div id="chatMessages">
+
+
+            <!-- İlk karşılama mesajı -->
+
+            <div class="message aiMessage">
+
+                Merhaba, ben BLOCERA AI.
+
+                Şantiye, elektrik, mekanik ve inşaat operasyonlarınız hakkında size yardımcı olabilirim.
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- MESAJ GİRİŞİ -->
+
+        <div class="chatInput">
+
+
+            <input
+
+                type="text"
+
+                id="messageInput"
+
+                placeholder="Mesajınızı yazın..."
+
+            >
+
+
+            <button id="sendButton">
+
+                Gönder
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =================================
+         JAVASCRIPT
+         CHATBOTUN ÇALIŞMASINI SAĞLAR
+         ================================= -->
+
+    <script>
+
+
+        /* ================================
+           HTML ELEMANLARINI ALIYORUZ
+           ================================ */
+
+        const chatButton =
+            document.getElementById("chatButton");
+
+
+        const chatWindow =
+            document.getElementById("chatWindow");
+
+
+        const closeButton =
+            document.getElementById("closeButton");
+
+
+        const sendButton =
+            document.getElementById("sendButton");
+
+
+        const messageInput =
+            document.getElementById("messageInput");
+
+
+        const chatMessages =
+            document.getElementById("chatMessages");
+
+
+
+        /* ================================
+           CHAT PENCERESİNİ AÇ
+           ================================ */
+
+        chatButton.onclick = function() {
+
+            chatWindow.style.display = "flex";
+
+            messageInput.focus();
+
+        };
+
+
+
+        /* ================================
+           CHAT PENCERESİNİ KAPAT
+           ================================ */
+
+        closeButton.onclick = function() {
+
+            chatWindow.style.display = "none";
+
+        };
+
+
+
+        /* ================================
+           EKRANA MESAJ EKLEME FONKSİYONU
+           ================================ */
+
+        function mesajEkle(mesaj, tip) {
+
+
+            const div =
+                document.createElement("div");
+
+
+            div.classList.add(
+                "message",
+                tip
+            );
+
+
+            div.textContent = mesaj;
+
+
+            chatMessages.appendChild(div);
+
+
+            /* Sohbeti otomatik olarak
+               en aşağı kaydır */
+
+            chatMessages.scrollTop =
+                chatMessages.scrollHeight;
+
+        }
+
+
+
+        /* ================================
+           MESAJ GÖNDERME
+           ================================ */
+
+        function mesajGonder() {
+
+
+            const mesaj =
+                messageInput.value.trim();
+
+
+            /* Boş mesaj gönderme */
+
+            if (!mesaj) {
+
+                return;
+
+            }
+
+
+            /* Kullanıcının mesajını ekrana yaz */
+
+            mesajEkle(
+                mesaj,
+                "userMessage"
+            );
+
+
+            /* Input'u temizle */
+
+            messageInput.value = "";
+
+
+
+            /* ============================
+               BLOCERA PYTHON API'SİNE
+               MESAJ GÖNDERİYORUZ
+               ============================ */
+
+            fetch("/api/sohbet", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    mesaj: mesaj
+
+                })
+
+            })
+
+
+            /* Python'dan gelen cevabı JSON
+               formatına çevir */
+
+            .then(response => {
+
+                return response.json();
+
+            })
+
+
+            /* AI cevabını ekrana yaz */
+
+            .then(data => {
+
+
+                if (data.basari) {
+
+
+                    mesajEkle(
+
+                        data.cevap,
+
+                        "aiMessage"
+
+                    );
+
+
+                }
+
+                else {
+
+
+                    mesajEkle(
+
+                        data.hata ||
+                        "Bir hata oluştu.",
+
+                        "aiMessage"
+
+                    );
+
+                }
+
+
+            })
+
+
+            /* İnternet veya Python bağlantı
+               hatası */
+
+            .catch(error => {
+
+
+                console.error(error);
+
+
+                mesajEkle(
+
+                    "BLOCERA AI bağlantısında bir hata oluştu.",
+
+                    "aiMessage"
+
+                );
+
+            });
+
+
+        }
+
+
+
+        /* ================================
+           GÖNDER BUTONU
+           ================================ */
+
+        sendButton.onclick = function() {
+
+            mesajGonder();
+
+        };
+
+
+
+        /* ================================
+           ENTER TUŞU İLE GÖNDER
+           ================================ */
+
+        messageInput.addEventListener(
+            "keydown",
+            function(event) {
+
+
+                if (event.key === "Enter") {
+
+                    mesajGonder();
+
+                }
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
