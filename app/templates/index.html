@@ -366,10 +366,61 @@
         </div>
 
 
-    </div>
+  </div>
 
 
+<!-- ================================
+     İLETİŞİM FORMU
+================================ -->
 
+<section id="iletisimFormu">
+
+    <h2>Bize Ulaşın</h2>
+
+
+    <input 
+        type="text"
+        id="ad_soyad"
+        placeholder="Ad Soyad"
+    >
+
+
+    <input 
+        type="text"
+        id="firma_adi"
+        placeholder="Firma Adı"
+    >
+
+
+    <input 
+        type="text"
+        id="telefon"
+        placeholder="Telefon"
+    >
+
+
+    <input 
+        type="email"
+        id="e_posta"
+        placeholder="E-Mail"
+    >
+
+
+    <textarea
+        id="mesaj"
+        placeholder="Mesajınız">
+    </textarea>
+
+
+    <button id="iletisimGonder">
+        Gönder
+    </button>
+
+
+    <p id="formSonuc"></p>
+
+
+</section>
     <!-- =================================
          JAVASCRIPT
          CHATBOTUN ÇALIŞMASINI SAĞLAR
@@ -625,7 +676,99 @@
 
             }
         );
+// ================================
+// İLETİŞİM FORMU GÖNDERME
+// ================================
 
+
+const iletisimButon = document.getElementById("iletisimGonder");
+
+
+if(iletisimButon){
+
+
+    iletisimButon.onclick = function(){
+
+
+        fetch("/api/leads", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+
+            body: JSON.stringify({
+
+                ad_soyad:
+                document.getElementById("ad_soyad").value,
+
+
+                firma_adi:
+                document.getElementById("firma_adi").value,
+
+
+                telefon:
+                document.getElementById("telefon").value,
+
+
+                e_posta:
+                document.getElementById("e_posta").value,
+
+
+                mesaj:
+                document.getElementById("mesaj").value
+
+            })
+
+        })
+
+
+        .then(response => response.json())
+
+
+        .then(data => {
+
+
+            if(data.basari){
+
+
+                document.getElementById("formSonuc").innerHTML =
+                "Talebiniz başarıyla gönderildi.";
+
+
+            }
+            else{
+
+
+                document.getElementById("formSonuc").innerHTML =
+                data.hata;
+
+
+            }
+
+
+        })
+
+
+        .catch(error => {
+
+
+            console.error(error);
+
+
+            document.getElementById("formSonuc").innerHTML =
+            "Bağlantı hatası oluştu.";
+
+
+        });
+
+
+    };
+
+
+}
 
     </script>
 
